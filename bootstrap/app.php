@@ -52,4 +52,24 @@ $app->singleton(
 |
 */
 
+/*
+|--------------------------------------------------------------------------
+| Register Webhook Routes
+|--------------------------------------------------------------------------
+|
+| Provider callbacks (e.g. Zoho CPaaS delivery receipts) are stateless:
+| they must bypass session state and CSRF verification. They are grouped
+| under the "api" middleware (which excludes VerifyCsrfToken) with the
+| /webhooks URL prefix. Registered via a booted callback so it works with
+| the Kernel-based bootstrap above without touching RouteServiceProvider.
+|
+*/
+
+$app->booted(function ($app) {
+    $app['router']
+        ->middleware('api')
+        ->prefix('webhooks')
+        ->group(base_path('routes/webhooks.php'));
+});
+
 return $app;
