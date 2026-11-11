@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
-use App\Traits\SendPushNotification;
 use App\Http\Requests\EventRequest;
 use App\Events\StandardPushEvent;
 use App\Traits\ReminderProcess;
@@ -38,7 +37,6 @@ use Carbon\Carbon;
 
 class EventsController extends Controller
 {
-    use SendPushNotification;
     use ReminderProcess;
     use EventProcess;
     use LogActivity;

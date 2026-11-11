@@ -11,7 +11,6 @@ use App\Events\Notification\SingleNotificationEvent;
 use App\Http\Requests\BirthdayReminderRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Traits\SendPushNotification;
 use App\Traits\SendMessageProcess;
 use App\Events\SinglePushEvent;
 use App\Traits\EventProcess;
@@ -32,7 +31,6 @@ use Log;
  */
 class BirthdayController extends Controller
 {
-    use SendPushNotification;
     use EventProcess;
     use SendMessageProcess;
     //

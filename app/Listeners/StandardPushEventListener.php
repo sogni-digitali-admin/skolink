@@ -6,7 +6,6 @@ use App\Events\StandardPushEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
-use App\Traits\SendPushNotification;
 use App\Models\StudentParentLink;
 use App\Models\User;
 use App\Notifications\SendDeviceNotification;
@@ -14,7 +13,6 @@ use App\Notifications\SendDeviceNotification;
 class StandardPushEventListener 
 {
 
-     use SendPushNotification;
     /**
      * Create the event listener.
      *

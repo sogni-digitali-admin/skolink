@@ -16,6 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use Laratrust\Traits\HasRolesAndPermissions;  //LaratrustUserTrait
 use Spatie\MediaLibrary\Models\Media;
 use Laravel\Sanctum\HasApiTokens;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 use App\Presenters\UserPresenter;
 use App\Helpers\SiteHelper;
 use Carbon\Carbon;
@@ -95,6 +96,7 @@ class User extends Authenticatable implements HasMedia
     use SoftDeletes;
     use Notifiable;
     use HasFactory;
+    use HasPushSubscriptions;
 
     // ===== USERGROUP CONSTANTS =====
     const SITEADMIN_USERGROUP_ID = 1;
@@ -1393,20 +1395,6 @@ class User extends Authenticatable implements HasMedia
     public function routeStudent()
     {
         return $this->hasOne('App\Models\RouteStudent','user_id','id');
-    }
-
-    /**
-     * Get the FCM notification token for this user.
-     *
-     * @param mixed $notification
-     * @return string
-     */
-    public function routeNotificationForFcm($notification)
-    {
-
-        //return $notification->data['token'];
-        return $notification->token;
-       // return $this->userdevicetoken()->pluck('token')->toArray();
     }
 
     /**

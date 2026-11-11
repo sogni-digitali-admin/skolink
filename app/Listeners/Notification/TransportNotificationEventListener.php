@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Models\User;
 use Notification;
-use App\Traits\SendPushNotification;
 use Exception;
 use Log;
 use App\Models\RouteStudent;
