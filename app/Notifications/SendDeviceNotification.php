@@ -5,19 +5,23 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
-use NotificationChannels\Fcm\FcmChannel;
-use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
+use NotificationChannels\WebPush\WebPushChannel;
+use NotificationChannels\WebPush\WebPushMessage;
 
 class SendDeviceNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public array $data;
-    public string $token;
 
-    public function __construct(array $data, string $token)
+    /**
+     * Legacy FCM device token. Kept in the constructor signature for the
+     * existing call sites; web push routes via the user's push_subscriptions
+     * instead, so the value is unused.
+     */
+    public ?string $token;
+
+    public function __construct(array $data, ?string $token = null)
     {
         $this->queue = 'notification';
         $this->data  = $data;
@@ -26,66 +30,30 @@ class SendDeviceNotification extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return [FcmChannel::class];
+        return [WebPushChannel::class, 'database'];
     }
 
-    public function toFcm($notifiable): FcmMessage
+    public function toWebPush($notifiable, $notification): WebPushMessage
     {
-        try {
-            $type    = $this->data['type'] ?? 'Notification';
-            $message = $this->data['message'] ?? '';
+        $type    = $this->data['type'] ?? 'Notification';
+        $message = $this->data['message'] ?? '';
 
-            return FcmMessage::create()
-                ->token($this->token)
-                ->data([
-                    'type'    => $type,
-                    'message' => $message,
-                ])
-                ->notification(
-                    FcmNotification::create($type, $message)
-                )
-                ->custom([
-                    'android' => [
-                        'notification' => [
-                            'color' => '#0A0A0A',
-                            'sound' => 'default',
-                        ],
-                        'fcm_options' => [
-                            'analytics_label' => 'analytics',
-                        ],
-                    ],
-                    'apns' => [
-                        'payload' => [
-                            'aps' => [
-                                'sound' => 'default',
-                            ],
-                        ],
-                        'fcm_options' => [
-                            'analytics_label' => 'analytics_ios',
-                        ],
-                    ],
-                ]);
-
-        } catch (\Exception $e) {
-            Log::error('FCM Notification Error', [
-                'token' => $this->token,
-                'data'  => $this->data,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            // Optional: prevent job from crashing
-            return FcmMessage::create()
-                ->token($this->token)
-                ->data([
-                    'type'    => 'Error',
-                    'message' => 'Notification failed',
-                ]);
-        }
+        return (new WebPushMessage)
+            ->title($type)
+            ->icon('/favicon.ico')
+            ->body($message)
+            ->data([
+                'type'    => $type,
+                'message' => $message,
+            ])
+            ->options(['TTL' => 1200]);
     }
 
-    public function fcmProject($notifiable, $message): ?string
+    public function toArray($notifiable): array
     {
-        return 'app';
+        return [
+            'type'    => $this->data['type'] ?? 'Notification',
+            'message' => $this->data['message'] ?? '',
+        ];
     }
 }

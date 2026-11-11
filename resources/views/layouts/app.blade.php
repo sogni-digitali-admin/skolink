@@ -7,6 +7,9 @@
         @include('layouts.partials.favicon')
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        @auth
+        <meta name="vapid-public-key" content="{{ config('webpush.vapid.public_key') }}">
+        @endauth
         <title>{{ config('app.name', 'GegoK12') }}</title>
         <!-- Styles -->
 
@@ -62,6 +65,9 @@
         <script src="{{ mix('js/vendor.js') }}"></script>
         <script src="{{ mix('js/app.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}" ></script>
+        @auth
+        <script src="{{ asset('push-subscribe.js') }}" defer></script>
+        @endauth
         @stack('scripts')
 
         <livewire:scripts>

@@ -3,7 +3,6 @@ namespace App\Console\Commands\Test;
 use Illuminate\Console\Command;
 use App\Models\User;
 use Log;
-use App\Traits\SendPushNotification;
 use App\Notifications\SendDeviceNotification;
 use App\Notifications\SendTeacherNotification;
 class CheckPushNotification extends Command
@@ -13,7 +12,6 @@ class CheckPushNotification extends Command
      *
      * @var string
      */
-   use SendPushNotification;
     protected $signature = 'gego:pushnotification';
     /**
      * The console command description.

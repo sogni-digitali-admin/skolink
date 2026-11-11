@@ -249,6 +249,12 @@ Route::group([
 
     Route::get('/addons','PurchaseHistoryController@index');
 
+    //web push subscriptions
+
+    Route::post('/push-subscriptions', 'PushSubscriptionController@store');
+
+    Route::post('/push-subscriptions/delete', 'PushSubscriptionController@destroy');
+
     
 
 });
