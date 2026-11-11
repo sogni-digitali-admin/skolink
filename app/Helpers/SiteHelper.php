@@ -834,3 +834,57 @@ class SiteHelper
         );
     }
 }
+
+/*
+|--------------------------------------------------------------------------
+| Global localization helpers
+|--------------------------------------------------------------------------
+|
+| This file is registered in composer.json "autoload.files", so the
+| functions below are available everywhere (including Blade) without
+| touching composer.json.
+|
+*/
+
+if (!function_exists('currency_symbol')) {
+    /**
+     * Get the configured currency symbol (e.g. "Rs" for MUR).
+     *
+     * @return string
+     */
+    function currency_symbol()
+    {
+        return config('school.currency_symbol', 'Rs');
+    }
+}
+
+if (!function_exists('currency_code')) {
+    /**
+     * Get the configured ISO currency code (default MUR).
+     *
+     * @return string
+     */
+    function currency_code()
+    {
+        return config('school.currency', 'MUR');
+    }
+}
+
+if (!function_exists('money')) {
+    /**
+     * Format an amount with the configured currency symbol.
+     *
+     * @param float|int|string $amount
+     * @param int|null $decimals Defaults to config('school.currency_decimals')
+     * @return string
+     */
+    function money($amount, $decimals = null)
+    {
+        $decimals = $decimals ?? config('school.currency_decimals', 2);
+        $formatted = number_format((float) $amount, $decimals);
+
+        return config('school.currency_symbol_position', 'before') === 'after'
+            ? $formatted . ' ' . currency_symbol()
+            : currency_symbol() . ' ' . $formatted;
+    }
+}
