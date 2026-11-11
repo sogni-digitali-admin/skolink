@@ -167,7 +167,6 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Laratrust\LaratrustServiceProvider::class,
         Stevebauman\Purify\PurifyServiceProvider::class,
-        //LaravelFCM\FCMServiceProvider::class,
 
         ///
         App\Schoolplus\StudentServiceProvider::class,
@@ -230,7 +229,6 @@ return [
         'Laratrust'   => Laratrust\LaratrustFacade::class,
         'Purify'   => Stevebauman\Purify\PurifyServiceProvider::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        'FCM'      => LaravelFCM\Facades\FCM::class,
         'Conference'=> App\Conference\ConferenceFacade::class,
         'Calendar'=> App\Calendar\CalendarFacade::class,
     ],
