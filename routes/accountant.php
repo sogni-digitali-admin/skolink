@@ -88,3 +88,16 @@ Route::get('/notification/list', 'NotificationController@indexList');
 Route::get('/notifications', 'NotificationController@index');
 Route::post('/notification/read', 'NotificationController@store');
 Route::get('/notification/showList', 'NotificationController@showList');
+
+//payments
+Route::get('/payments', 'PaymentController@index');
+Route::get('/payments/create', 'PaymentController@create');
+Route::post('/payments', 'PaymentController@store');
+Route::get('/payments/reconciliation', 'PaymentReconciliationController@index');
+Route::get('/payments/{id}/receipt', 'PaymentController@receipt');
+
+//provider callbacks are not logged-in users: strip web/auth middleware,
+//the gateway verifies the signature header instead
+Route::post('/payments/webhook/{driver}', 'PaymentWebhookController@handle')
+    ->name('accountant.payments.webhook')
+    ->withoutMiddleware(['web', 'auth', 'accountant', \App\Http\Middleware\VerifyCsrfToken::class]);
