@@ -254,12 +254,21 @@ class RegisterController extends Controller
     {
         try
         {
+            $shape  = config('school.academic_year', [
+                'start' => '01-01', 'end' => '12-31',
+                'crosses_calendar_year' => false, 'name_format' => 'Y',
+            ]);
+            $year   = (int) date('Y');
+            $startY = $shape['crosses_calendar_year'] && date('m-d') < $shape['start'] ? $year - 1 : $year;
+            $endY   = $shape['crosses_calendar_year'] ? $startY + 1 : $startY;
+            $name   = $shape['name_format'] === 'Y' ? (string) $startY : $startY . '-' . $endY;
+
             $detail = AcademicYear::create([
                 'school_id'     =>  $school->id,
-                'name'          =>  '2020-2021',
+                'name'          =>  $name,
                 'description'   =>  'Current Academic Year',
-                'start_date'    =>  '2020-06-01',
-                'end_date'      =>  '2021-05-31',
+                'start_date'    =>  $startY . '-' . $shape['start'],
+                'end_date'      =>  $endY . '-' . $shape['end'],
                 'status'        =>  1,
             ]);
 
