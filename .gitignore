@@ -107,3 +107,6 @@ public/uploads/reports/*
 .vapor/*
 composer.lock
 public/demo-school
+phpdoc.phar
+debug.log
+phpunit.xml.bak
