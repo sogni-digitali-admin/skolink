@@ -233,7 +233,7 @@ function saveAdminConfig($data) {
     $_SESSION['admin_config'] = [
         'app_name' => trim($data['app_name']),
         'app_url' => rtrim(trim($data['app_url']), '/'),
-        'timezone' => isset($data['timezone']) ? $data['timezone'] : 'UTC',
+        'timezone' => isset($data['timezone']) ? $data['timezone'] : getDefaultTimezone(),
         'admin_email' => $email,
         'admin_password' => $password
     ];
@@ -487,10 +487,18 @@ function createStorageDirectories() {
 }
 
 /**
+ * Get the installer default timezone
+ */
+function getDefaultTimezone() {
+    return 'Indian/Mauritius';
+}
+
+/**
  * Get common timezones
  */
 function getTimezones() {
     return [
+        'Indian/Mauritius' => 'Indian/Mauritius (MUT, UTC+4)',
         'UTC' => 'UTC',
         'Asia/Kolkata' => 'Asia/Kolkata (IST)',
         'Asia/Dubai' => 'Asia/Dubai (GST)',

@@ -53,7 +53,7 @@ $baseUrl = str_replace('/installer', '', $baseUrl);
                 <select id="timezone" name="timezone" required
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
                     <?php foreach ($timezones as $value => $label): ?>
-                    <option value="<?php echo htmlspecialchars($value); ?>" <?php echo $value === 'Asia/Kolkata' ? 'selected' : ''; ?>>
+                    <option value="<?php echo htmlspecialchars($value); ?>" <?php echo $value === getDefaultTimezone() ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($label); ?>
                     </option>
                     <?php endforeach; ?>
