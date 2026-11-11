@@ -42,16 +42,21 @@ class SchoolObserver
                 return;
             }
 
+            // Academic year bounds come from config('school.academic_year')
+            // — Jan-Dec for Mauritius, but config-driven so Aug-Jul markets
+            // keep working.
+            $calendar    = config('school.academic_year');
             $currentYear = Carbon::now()->year;
             $prevYear    = $currentYear - 1;
+            $crosses     = !empty($calendar['crosses_calendar_year']);
 
             // Previous Academic Year
             AcademicYear::create([
                 'school_id'   => $school->id,
-                'name'        => $prevYear . '-' . $currentYear,
+                'name'        => $crosses ? ($prevYear . '-' . $currentYear) : (string) $prevYear,
                 'description' => 'Previous Academic Year',
-                'start_date'  => $prevYear . '-06-01',
-                'end_date'    => $currentYear . '-04-30',
+                'start_date'  => $prevYear . '-' . $calendar['start'],
+                'end_date'    => ($crosses ? $currentYear : $prevYear) . '-' . $calendar['end'],
                 'status'      => 0, // OLD
                 'created_at'  => now(),
                 'updated_at'  => now(),
@@ -60,10 +65,10 @@ class SchoolObserver
             // Current Academic Year
             AcademicYear::create([
                 'school_id'   => $school->id,
-                'name'        => $currentYear . '-' . ($currentYear + 1),
+                'name'        => $crosses ? ($currentYear . '-' . ($currentYear + 1)) : (string) $currentYear,
                 'description' => 'Current Academic Year',
-                'start_date'  => $currentYear . '-06-01',
-                'end_date'    => ($currentYear + 1) . '-04-30',
+                'start_date'  => $currentYear . '-' . $calendar['start'],
+                'end_date'    => ($crosses ? $currentYear + 1 : $currentYear) . '-' . $calendar['end'],
                 'status'      => 1, // CURRENT
                 'created_at'  => now(),
                 'updated_at'  => now(),
