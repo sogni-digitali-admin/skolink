@@ -1,0 +1,32 @@
+# Phase 4 — Payments environment keys
+# Copy into .env as needed. .env / .env.example are owned by another phase,
+# so these are documented here instead.
+
+# --- General -----------------------------------------------------------------
+# Default payment driver when a school has no active row in payment_gateways.
+# Supported: manual, mips
+PAYMENTS_DEFAULT_DRIVER=manual
+
+# School currency is provided by Phase 1 as config('school.currency');
+# the payments code falls back to MUR when it is absent. (Key shown for
+# completeness — defined by Phase 1, do not duplicate ownership.)
+SCHOOL_CURRENCY=MUR
+
+# --- MIPS gateway (Phase 4b, BETA — disabled until a real contract exists) ---
+MIPS_ENABLED=false
+MIPS_MODE=sandbox                 # sandbox | production
+MIPS_BASE_URL_SANDBOX=
+MIPS_BASE_URL_PRODUCTION=
+MIPS_MERCHANT_ID=
+MIPS_MERCHANT_SECRET=
+MIPS_WEBHOOK_SECRET=
+MIPS_SIGNATURE_HEADER=X-MIPS-Signature
+MIPS_TIMEOUT=15
+
+# Notes:
+# - Per-school gateway choice + credentials are stored encrypted in the
+#   payment_gateways DB table (via App\Models\PaymentGatewaySetting),
+#   and override these env values. Never hardcode credentials.
+# - Webhook endpoint: POST /accountant/payments/webhook/{driver}
+#   (registered without web/auth middleware; the gateway verifies the
+#   signature header). Move to routes/api.php when that file is unblocked.
