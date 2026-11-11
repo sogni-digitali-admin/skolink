@@ -137,8 +137,17 @@ class AdmissionController extends Controller
         $school=School::where('slug',$slug)->first();
 
         $academic_year  = SiteHelper::getAcademicYear($school->id);
+
+        // DPA 2017: data processing consent is mandatory; notification and
+        // WhatsApp opt-ins are stored with their timestamp when given.
+        $request->validate([
+            'data_processing_consent' => ['accepted'],
+            'notification_opt_in'     => ['nullable', 'boolean'],
+            'whatsapp_opt_in'         => ['nullable', 'boolean'],
+        ]);
+
         try
-        {  
+        {
             $admin = User::where('school_id',$school->id)->ByRole(3)->first();
        
             $admission = new Admission;
@@ -249,6 +258,12 @@ class AdmissionController extends Controller
     
             $admission->application_status      = 'Draft';
             $admission->application_no          = 'APP-FORM-'.date('YmdHis');
+
+            // DPA 2017 consent timestamps (whatsapp_opted_in_at is consumed
+            // by the Phase 3 WhatsApp notification layer).
+            $admission->data_processing_consented_at = now();
+            $admission->notification_opted_in_at     = $request->boolean('notification_opt_in') ? now() : null;
+            $admission->whatsapp_opted_in_at         = $request->boolean('whatsapp_opt_in') ? now() : null;
 
             $admission->save();
 

@@ -120,7 +120,7 @@ class AdmissionParentRequest extends FormRequest
             'father_occupation'         => 'required|check_father_occupation',
             'father_organisation'       => 'required|check_father_organisation',
             'father_income'             => 'required|numeric|check_father_annual_income|check_father_annual_income_value',
-            'father_mobile_no'          => 'required|numeric|digits:10',
+            'father_mobile_no'          => 'required|' . $this->phoneRule(),
             'father_email'              => 'required|email',
             'father_aadhar_number'      => 'required|numeric|digits:12',
       
@@ -130,15 +130,27 @@ class AdmissionParentRequest extends FormRequest
             'mother_occupation'         => 'required|check_mother_occupation',
             'mother_organisation'       => 'required|check_mother_organisation',
             'mother_income'             => 'required|numeric|check_mother_annual_income|check_mother_annual_income_value',
-            'mother_mobile_no'          => 'nullable|numeric|digits:10',
+            'mother_mobile_no'          => 'nullable|' . $this->phoneRule(),
             'mother_email'              => 'nullable|email',
             'mother_aadhar_number'      => 'required|numeric|digits:12',
 
-            'emergency_contact_1'       => 'required|numeric|digits:10',
+            'emergency_contact_1'       => 'required|' . $this->phoneRule(),
             'relation_with_student_1'   => 'required|check_relation',
-            'emergency_contact_2'       => 'required|numeric|digits:10',
+            'emergency_contact_2'       => 'required|' . $this->phoneRule(),
             'relation_with_student_2'   => 'required|check_relation_two',
         ];
+    }
+
+    /**
+     * Phone validation rule for the configured market — Mauritius: bare
+     * 8-digit national number or full E.164 (+230XXXXXXXX). Other request
+     * classes should migrate to this config-driven rule as they are touched.
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()
@@ -166,8 +178,7 @@ class AdmissionParentRequest extends FormRequest
             'father_income.check_father_annual_income_value'        => 'Enter Valid Income',
 
             'father_mobile_no.required'                             => 'Mobile Number Is Required',
-            'father_mobile_no.numeric'                              => 'Enter Valid Mobile Number',
-            'father_mobile_no.digits:10'                            => 'Mobile Number Should Be Of 10 Digits',
+            'father_mobile_no.regex'                                => 'Enter a valid mobile number (8 digits, e.g. 51234567, or +23051234567)',
 
             'father_email.required'                                 => 'Email Is Required',
             'father_email.email'                                    => 'Enter Valid Email',
@@ -196,8 +207,7 @@ class AdmissionParentRequest extends FormRequest
             'mother_income.check_mother_annual_income'              => 'Income Should Be Greater Lesser Than 9 Digits',
             'mother_income.check_mother_annual_income_value'        => 'Enter Valid Income',
 
-            'mother_mobile_no.numeric'                              => 'Enter Valid Mobile Number',
-            'mother_mobile_no.digits:10'                            => 'Mobile Number Should Be Of 10 Digits',
+            'mother_mobile_no.regex'                                => 'Enter a valid mobile number (8 digits, e.g. 51234567, or +23051234567)',
 
             'mother_email.email'                                    => 'Enter Valid Email',
 
@@ -212,12 +222,10 @@ class AdmissionParentRequest extends FormRequest
             'relation_with_student_2.check_relation_two'            => 'Enter Valid Relation',
             
             'emergency_contact_1.required'                          => 'Mobile Number Is Required',
-            'emergency_contact_1.numeric'                           => 'Enter Valid Mobile Number',
-            'emergency_contact_1.digits:10'                         => 'Mobile Number Should Be Of 10 Digits',
+            'emergency_contact_1.regex'                             => 'Enter a valid mobile number (8 digits, e.g. 51234567, or +23051234567)',
 
             'emergency_contact_2.required'                          => 'Mobile Number Is Required',
-            'emergency_contact_2.numeric'                           => 'Enter Valid Mobile Number',
-            'emergency_contact_2.digits:10'                         => 'Mobile Number Should Be Of 10 Digits',
+            'emergency_contact_2.regex'                             => 'Enter a valid mobile number (8 digits, e.g. 51234567, or +23051234567)',
         ];
     }
 }

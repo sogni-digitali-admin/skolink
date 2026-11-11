@@ -1,6 +1,24 @@
 <?php
 
 use App\Http\Controllers\Superadmin\DashboardController;
+use App\Http\Middleware\SetLocale;
+use Illuminate\Support\Facades\Auth;
+
+Route::middleware([SetLocale::class])->group(function () {
+
+// Session-level locale switcher (EN/FR). Persists to the user profile when
+// logged in (userprofiles.locale); session-only otherwise.
+Route::get('/locale/{locale}', function ($locale) {
+    abort_unless(array_key_exists($locale, config('school.locale.available', ['en' => 'English'])), 404);
+
+    session(['locale' => $locale]);
+
+    if (Auth::check() && Auth::user()->userprofile) {
+        Auth::user()->userprofile->update(['locale' => $locale]);
+    }
+
+    return redirect()->back();
+})->name('locale.switch');
 
 /*Route::get('/', function () {
   return redirect()->route('login');
@@ -58,3 +76,5 @@ Route::post( '/{slug}/admission-form/validationPersonalDetail', 'AdmissionContro
 
 
 
+
+});
