@@ -1,0 +1,39 @@
+# ==========================================================================
+# Zoho channels — env keys for Phase 3
+# --------------------------------------------------------------------------
+# Hand this block to the orchestrator for central integration into
+# .env / .env.example. Values below are DUMMIES — replace with real
+# credentials from the Zoho consoles. See ZOHO_SETUP.md for the steps.
+# ==========================================================================
+
+# --- ZeptoMail (transactional email, plain SMTP) --------------------------
+# ZeptoMail console -> Mail Agent -> verify domain (SPF + DKIM + CNAME at
+# the DNS provider), then generate a "Send Mail Token" and use it as
+# MAIL_PASSWORD. MAIL_STATUS is the app-level master switch for outbound
+# mail (checked across controllers/listeners).
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.zeptomail.com
+MAIL_PORT=587
+MAIL_USERNAME=emailapikey
+MAIL_PASSWORD=zeptomail-send-mail-token-here
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=no-reply@school-domain.mu
+MAIL_FROM_NAME="${APP_NAME}"
+MAIL_STATUS=on
+
+# --- Zoho CPaaS (WhatsApp Business) ---------------------------------------
+# Master switch for the WhatsApp channel. Keep false until the WABA, the
+# +230 sender number and the message templates are approved; the channel
+# self-skips while this is false or any credential below is missing.
+ZOHO_CPAAS_ENABLED=false
+# Zoho CPaaS console -> API credentials (bearer token).
+ZOHO_CPAAS_API_KEY=zoho-cpaas-api-key-here
+# Sender key of the registered WhatsApp Business number.
+ZOHO_CPAAS_SENDER_KEY=zoho-cpaas-sender-key-here
+# One-POST messages endpoint (default shown; override if Zoho assigns a
+# regional URL).
+ZOHO_CPAAS_ENDPOINT=https://cpaas.zoho.com/v1/whatsapp/messages
+# Shared secret Zoho must send as the X-Zoho-Webhook-Secret header on
+# delivery-status callbacks to POST /webhooks/zoho-cpaas.
+# Generate with: openssl rand -hex 32
+ZOHO_CPAAS_WEBHOOK_SECRET=generate-a-long-random-string-here

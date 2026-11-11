@@ -42,6 +42,21 @@ return [
       ],
       'google_maps' => [
             'key' => env('GOOGLE_MAPS_API_KEY'),
-        ]
+        ],
+
+    /*
+    | ZeptoMail (transactional email) is plain SMTP as far as Laravel is
+    | concerned — no SDK and no config array here. Its credentials live in
+    | the MAIL_* environment keys (see env-snippets/zoho.txt). MAIL_STATUS
+    | remains the application-level master switch for outbound mail.
+    */
+
+    'zoho_cpaas' => [
+        'enabled' => (bool) env('ZOHO_CPAAS_ENABLED', false),
+        'api_key' => env('ZOHO_CPAAS_API_KEY'),
+        'sender_key' => env('ZOHO_CPAAS_SENDER_KEY'),
+        'endpoint' => env('ZOHO_CPAAS_ENDPOINT', 'https://cpaas.zoho.com/v1/whatsapp/messages'),
+        'webhook_secret' => env('ZOHO_CPAAS_WEBHOOK_SECRET'),
+    ],
 
 ];
