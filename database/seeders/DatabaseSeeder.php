@@ -27,11 +27,19 @@ class DatabaseSeeder extends Seeder
         $this->call(AbsentReasonsTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(SchoolsTableSeeder::class);  
-        $this->call(SchoolDetailsTableSeeder::class);  
-        $this->call(AcademicYearsTableSeeder::class);  
-        $this->call(SectionsTableSeeder::class);  
-        $this->call(StandardsTableSeeder::class); 
-        $this->call(SubjectsTableSeeder::class); 
+        $this->call(SchoolDetailsTableSeeder::class);
+
+        $preset = config('school.preset');
+
+        if ($preset === 'mauritius_primary') {
+            $this->call(SectionsTableSeeder::class);
+            $this->call(MauritiusPresetSeeder::class);
+        } else {
+            $this->call(AcademicYearsTableSeeder::class);
+            $this->call(SectionsTableSeeder::class);
+            $this->call(StandardsTableSeeder::class);
+            $this->call(SubjectsTableSeeder::class);
+        }
         //$this->call(UsersTableSeeder::class);  //test
         $this->call(UsersSchoolAdminTableSeeder::class);
         $this->call(UsersTeacherTableSeeder::class);  //test
@@ -50,7 +58,9 @@ class DatabaseSeeder extends Seeder
         $this->call(NonScholasticGradesTableSeeder::class);
         $this->call(LeaveTypesTableSeeder::class); 
         $this->call(RoleUsersTableSeeder::class);
-        $this->call(HolidaySeeder::class);//test //
+        if ($preset !== 'mauritius_primary') {
+            $this->call(HolidaySeeder::class);//test //
+        }
         //$this->call(LessonPlanTableSeeder::class);//test
         $this->call(PageCategoryTableSeeder::class);
 
