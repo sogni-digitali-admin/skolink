@@ -120,10 +120,10 @@ export async function getChildFees(studentId: number): Promise<FeeAccount> {
     raw && typeof raw === 'object' && 'data' in (raw as Record<string, unknown>)
       ? (raw as { data: unknown }).data
       : raw
-  ) as Partial<FeeAccount> | null
+  ) as Record<string, unknown> | null
   return {
     studentId,
-    currency: obj?.currency ?? 'MUR',
+    currency: (obj?.currency as string | undefined) ?? 'MUR',
     balanceDue: Number(obj?.balanceDue ?? obj?.balance_due ?? 0),
     lines: Array.isArray(obj?.lines) ? (obj.lines as FeeAccount['lines']) : [],
   }
@@ -143,11 +143,11 @@ export async function createPayment(input: PaymentRequest): Promise<PaymentRespo
     raw && typeof raw === 'object' && 'data' in (raw as Record<string, unknown>)
       ? (raw as { data: unknown }).data
       : raw
-  ) as Partial<PaymentResponse> | null
+  ) as Record<string, unknown> | null
   return {
     reference: String(obj?.reference ?? ''),
-    checkoutUrl: obj?.checkoutUrl ?? obj?.checkout_url,
-    status: obj?.status,
+    checkoutUrl: (obj?.checkoutUrl ?? obj?.checkout_url) as string | undefined,
+    status: obj?.status as string | undefined,
   }
 }
 

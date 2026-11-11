@@ -59,4 +59,8 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 600,
   },
+  css: {
+    // The repo root has a postcss.config.js for the legacy app — do not inherit it.
+    postcss: { plugins: [] },
+  },
 })

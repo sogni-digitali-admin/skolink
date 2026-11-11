@@ -35,7 +35,7 @@ const isActive = (to: string) => route.path.startsWith(to)
 
 <template>
   <nav class="bottom-nav">
-    <router-link v-for="item in items" :key="item.to" :to="to" :class="{ active: isActive(to) }">
+    <router-link v-for="item in items" :key="item.to" :to="item.to" :class="{ active: isActive(item.to) }">
       <span class="ico" aria-hidden="true">{{ item.icon }}</span>
       <span>{{ t(item.labelKey) }}</span>
     </router-link>
