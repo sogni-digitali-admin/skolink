@@ -3,7 +3,22 @@
  * AJAX endpoint for testing database connection
  */
 
+session_start();
+
 header('Content-Type: application/json');
+
+// Define base path
+define('BASE_PATH', dirname(dirname(__DIR__)));
+
+// Block access once the application is installed (mirrors index.php guard)
+$isInstalled = file_exists(BASE_PATH . '/storage/installed');
+$allowReinstall = !empty($_SESSION['installer_finalized']);
+
+if ($isInstalled && !$allowReinstall) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Application is already installed']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
@@ -18,6 +33,12 @@ $password = isset($_POST['db_pass']) ? $_POST['db_pass'] : '';
 
 if (empty($host) || empty($database) || empty($username)) {
     echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
+    exit;
+}
+
+// Prevent backtick injection into CREATE DATABASE
+if (!preg_match('/^[A-Za-z0-9_]+$/', $database)) {
+    echo json_encode(['success' => false, 'message' => 'Invalid database name. Only letters, numbers and underscores are allowed.']);
     exit;
 }
 

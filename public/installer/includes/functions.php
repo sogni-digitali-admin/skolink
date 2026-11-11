@@ -138,6 +138,11 @@ function checkPermissions() {
  * Test database connection
  */
 function testDatabaseConnection($host, $port, $database, $username, $password) {
+    // Prevent backtick injection into CREATE DATABASE
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $database)) {
+        return ['success' => false, 'message' => 'Invalid database name. Only letters, numbers and underscores are allowed.'];
+    }
+
     try {
         $dsn = "mysql:host={$host};port={$port}";
         $pdo = new PDO($dsn, $username, $password);
@@ -173,6 +178,11 @@ function saveDatabaseConfig($data) {
     $database = trim($data['db_name']);
     $username = trim($data['db_user']);
     $password = isset($data['db_pass']) ? $data['db_pass'] : '';
+
+    // Prevent backtick injection into CREATE DATABASE
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $database)) {
+        return ['success' => false, 'message' => 'Invalid database name. Only letters, numbers and underscores are allowed.'];
+    }
 
     // Test connection
     $test = testDatabaseConnection($host, $port, $database, $username, $password);

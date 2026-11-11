@@ -14,6 +14,16 @@ define('INSTALLER_PATH', __DIR__);
 
 require_once INSTALLER_PATH . '/includes/functions.php';
 
+// Block access once the application is installed (mirrors index.php guard)
+$isInstalled = file_exists(BASE_PATH . '/storage/installed');
+$allowReinstall = !empty($_SESSION['installer_finalized']);
+
+if ($isInstalled && !$allowReinstall) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Application is already installed']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
