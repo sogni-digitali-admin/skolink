@@ -134,7 +134,8 @@ class SchoolDetailsController extends Controller
                     'about_us','admission_open','admission_close_message',
                     'admission_close_on','affiliation_no','affiliated_by',
                     'board','date_of_establishment','landline_no',
-                    'moto','school_logo','website'
+                    'moto','school_logo','website',
+                    'school_type','moe_zone'
                 ];
 
                 foreach($arrays as $array)
