@@ -51,8 +51,18 @@ class Subject extends Model
      */
 	protected $fillable = [
 
-	    'school_id' , 'academic_year_id' , 'standard_id' , 'section_id' , 'name' , 'code' , 'type'
+	    'school_id' , 'academic_year_id' , 'standard_id' , 'section_id' , 'name' , 'code' , 'type' , 'is_core' , 'assessment_type' , 'grading_scale_id'
 	];
+
+    /**
+     * Get the grading scale used to grade this subject, if any.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function gradingScale()
+    {
+        return $this->belongsTo('App\Models\GradingScale', 'grading_scale_id');
+    }
 
     /**
      * Get the uppercase name for this subject.

@@ -39,7 +39,7 @@ class Admission extends Model
      * @var array
      */
     protected $fillable = [
-    	'school_id' , 'academic_year_id' , 'standard_id' , 'name' , 'date_of_birth' , 'gender' , 'height' , 'weight' , 'birth_place' , 'nationality' , 'avatar' , 'religion' , 'community' , 'mother_tongue' , 'identification_marks' , 'aadhar_number' , 'blood_group' , 'school_last_studied' , 'reason_for_leaving' , 'permanent_address' , 'address_for_communication' , 'siblings' , 'half_yearly_mark_details' , 'board_of_education' , 'choice_of_language' , 'group_selection' , 'board_registration_number' , 'father_name' , 'father_qualification_id' , 'father_designation' , 'father_occupation' , 'father_organisation' , 'father_income' , 'father_mobile_no' , 'father_email' , 'father_aadhar_number' , 'father_avatar' , 'mother_name' , 'mother_qualification_id' , 'mother_designation' , 'mother_occupation' , 'mother_organisation' , 'mother_income' , 'mother_mobile_no' , 'mother_email' , 'mother_aadhar_number' , 'mother_avatar' , 'emergency_contact_1' , 'relation_with_student_1' , 'emergency_contact_2' , 'relation_with_student_2' , 'medical_history' , 'medical_details' , 'extra_curricular_activities' , 'activities' , 'mode_of_transport' , 'transport_details' , 'application_no' , 'application_status' , 'section_id' , 'payment_status' , 'fee_group_id' , 'remarks'
+    	'school_id' , 'academic_year_id' , 'standard_id' , 'name' , 'date_of_birth' , 'gender' , 'height' , 'weight' , 'birth_place' , 'nationality' , 'avatar' , 'religion' , 'community' , 'mother_tongue' , 'identification_marks' , 'aadhar_number' , 'blood_group' , 'school_last_studied' , 'reason_for_leaving' , 'permanent_address' , 'address_for_communication' , 'siblings' , 'half_yearly_mark_details' , 'board_of_education' , 'choice_of_language' , 'group_selection' , 'board_registration_number' , 'father_name' , 'father_qualification_id' , 'father_designation' , 'father_occupation' , 'father_organisation' , 'father_income' , 'father_mobile_no' , 'father_email' , 'father_aadhar_number' , 'father_avatar' , 'mother_name' , 'mother_qualification_id' , 'mother_designation' , 'mother_occupation' , 'mother_organisation' , 'mother_income' , 'mother_mobile_no' , 'mother_email' , 'mother_aadhar_number' , 'mother_avatar' , 'emergency_contact_1' , 'relation_with_student_1' , 'emergency_contact_2' , 'relation_with_student_2' , 'medical_history' , 'medical_details' , 'extra_curricular_activities' , 'activities' , 'mode_of_transport' , 'transport_details' , 'application_no' , 'application_status' , 'section_id' , 'payment_status' , 'fee_group_id' , 'remarks' , 'data_processing_consented_at' , 'notification_opted_in_at' , 'whatsapp_opted_in_at'
     ];
 
     /**
@@ -48,6 +48,17 @@ class Admission extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'data_processing_consented_at' => 'datetime',
+        'notification_opted_in_at'     => 'datetime',
+        'whatsapp_opted_in_at'         => 'datetime',
+    ];
 
     /**
      * Get the school that owns the admission.
