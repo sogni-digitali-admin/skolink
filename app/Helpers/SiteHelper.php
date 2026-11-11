@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers {
 
 use App\Http\Resources\AssignmentTeacher as AssignmentTeacherResource;
 use App\Http\Resources\API\NonScholastic as NonScholasticResource;
@@ -835,14 +835,18 @@ class SiteHelper
     }
 }
 
+}
+
+namespace {
+
 /*
 |--------------------------------------------------------------------------
 | Global localization helpers
 |--------------------------------------------------------------------------
 |
 | This file is registered in composer.json "autoload.files", so the
-| functions below are available everywhere (including Blade) without
-| touching composer.json.
+| functions below (declared in the global namespace) are available
+| everywhere — including Blade — without touching composer.json.
 |
 */
 
@@ -887,4 +891,6 @@ if (!function_exists('money')) {
             ? $formatted . ' ' . currency_symbol()
             : currency_symbol() . ' ' . $formatted;
     }
+}
+
 }
