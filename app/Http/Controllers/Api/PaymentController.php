@@ -108,6 +108,10 @@ class PaymentController extends Controller
 
             $session = $gateway->initiate($payment);
         } catch (\RuntimeException $e) {
+            if (! $reused && $payment && $payment->exists) {
+                $payment->delete();
+            }
+
             return response()->json([
                 'success'   =>  false,
                 'message'   =>  $e->getMessage(),
