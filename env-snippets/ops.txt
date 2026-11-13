@@ -1,0 +1,69 @@
+# ==========================================================================
+# Ops runtime — env keys for the notifications/realtime phase (backend B2)
+# --------------------------------------------------------------------------
+# Hand this block to the orchestrator for central integration into
+# .env / .env.example. Values below are DUMMIES — replace with real
+# credentials. Covers: queue/scheduler, Laravel Reverb (WebSockets),
+# Web Push (VAPID), ZeptoMail (SMTP), Zoho CPaaS (WhatsApp).
+# ==========================================================================
+
+# --- Queue + scheduler ------------------------------------------------------
+# Notifications are queued (ShouldQueue); the docker-compose `queue`
+# service runs: php artisan queue:work database --sleep=3 --tries=3
+#   --queue=default,notification
+# and the `scheduler` service runs schedule:run every 60s (drives
+# gego:checkmail / reminder dispatch). Both need:
+QUEUE_CONNECTION=database
+
+# --- Laravel Reverb (self-hosted WebSocket server) --------------------------
+# Start with: docker compose -f docker-compose.yml -f docker-compose.reverb.yml up -d
+# nginx proxies the pusher-protocol paths /app and /apps to the reverb
+# service on port 8080 (see nginx.conf). Generate key/secret as random
+# strings; they must match between the app and the frontend config.
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=gegok12
+REVERB_APP_KEY=local-reverb-key          # replace with a random string
+REVERB_APP_SECRET=local-reverb-secret    # replace with a random string
+# Inside compose: app reaches reverb by service name (REVERB_HOST=reverb,
+# set by docker-compose.reverb.yml). On a single host use 127.0.0.1.
+REVERB_HOST=127.0.0.1
+REVERB_PORT=8080
+REVERB_SCHEME=http                        # terminate TLS at nginx in production
+
+# --- Web Push (VAPID) --------------------------------------------------------
+# Generate once with: php artisan webpush:vapid  (writes both keys here)
+VAPID_SUBJECT="${APP_URL}"
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+
+# --- ZeptoMail (transactional email, plain SMTP) ----------------------------
+# ZeptoMail console -> Mail Agent -> verify domain (SPF + DKIM + CNAME at
+# the DNS provider), then generate a "Send Mail Token" and use it as
+# MAIL_PASSWORD. MAIL_MAILER=log is fully supported for local/dev: every
+# notification's mail channel then writes to storage/logs instead.
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.zeptomail.com
+MAIL_PORT=587
+MAIL_USERNAME=emailapikey
+MAIL_PASSWORD=zeptomail-send-mail-token-here
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=no-reply@school-domain.mu
+MAIL_FROM_NAME="${APP_NAME}"
+# App-level master switch checked by the reminder cron (gego:checkmail).
+MAIL_STATUS=on
+
+# --- Zoho CPaaS (WhatsApp Business) -----------------------------------------
+# Keep ZOHO_CPAAS_ENABLED=false until the WABA, the +230 sender number and
+# the message templates (absentee_alert, fee_reminder, school_notice — EN
+# and FR variants) are approved; the channel self-skips while disabled.
+ZOHO_CPAAS_ENABLED=false
+ZOHO_CPAAS_API_KEY=zoho-cpaas-api-key-here
+ZOHO_CPAAS_SENDER_KEY=zoho-cpaas-sender-key-here
+ZOHO_CPAAS_ENDPOINT=https://cpaas.zoho.com/v1/whatsapp/messages
+
+# --- Notes -------------------------------------------------------------------
+# - Phone validation is config-driven: config/school.php
+#   phone.validation_regex (default '/^(\+230)?[0-9]{8}$/'). Not an env key;
+#   change it in config/school.php if a deployment leaves Mauritius.
+# - users.platform_token (legacy FCM) is no longer written; browsers
+#   subscribe via POST /api/push-subscriptions (Sanctum-protected) instead.
