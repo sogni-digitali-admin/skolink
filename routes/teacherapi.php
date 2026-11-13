@@ -244,6 +244,8 @@ Route::group([ 'prefix' => 'teacher' , 'middleware'=>['auth:sanctum'] , 'namespa
     //notice board
         Route::get('/my-school/notices','NoticeBoardController@indexSchool');
 
+        Route::post('/notice/add','NoticeBoardController@store');
+
         Route::get('/notices/class/{teacher_id}','NoticeBoardController@showNotices');
 
         Route::get('/my-school/notices/expired','NoticeBoardController@expiredSchool');

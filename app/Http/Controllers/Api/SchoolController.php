@@ -47,6 +47,8 @@ class SchoolController extends Controller
         $array['city']                  = $school->city->name;
         $array['pincode']               = $school->pincode; 
 
+        $array['theme_color']           = $details->get('theme_color') === '-' ? null : $details->get('theme_color');
+
         $settings = Setting::whereIn('key', [
             'assignment_status',
             'homework_status'
@@ -112,6 +114,8 @@ class SchoolController extends Controller
         $array['state']                 = $school->state->name;
         $array['city']                  = $school->city->name;
         $array['pincode']               = $school->pincode;
+
+        $array['theme_color']           = $details->get('theme_color') === '-' ? null : $details->get('theme_color');
 
          $settings = Setting::whereIn('key', [
             'assignment_status',

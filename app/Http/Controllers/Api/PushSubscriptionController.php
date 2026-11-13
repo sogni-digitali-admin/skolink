@@ -48,6 +48,26 @@ class PushSubscriptionController extends Controller
     }
 
     /**
+     * Expose the VAPID public key so the PWA can subscribe to Web Push.
+     * Both casings are returned at the top level because the PWA reads the
+     * response body directly (no envelope unwrap).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function vapidPublicKey()
+    {
+        $key = config('webpush.vapid.public_key');
+
+        return response()->json([
+            'success'    => true,
+            'message'    => 'VAPID Public Key',
+            'publicKey'  => $key,
+            'public_key' => $key,
+            'data'       => ['publicKey' => $key],
+        ], 200);
+    }
+
+    /**
      * Remove a browser web push subscription for the authenticated user.
      *
      * @param  \Illuminate\Http\Request  $request

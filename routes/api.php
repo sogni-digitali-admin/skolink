@@ -166,6 +166,12 @@ Route::group([
 
     // Route::get('/fees/show/{id}','FeesController@show');
 
+    Route::get('/fees/{student_id}','FeesController@account');
+
+    //Results (PSAC)
+
+    Route::get('/results/{student_id}','ResultsController@show');
+
     //Notice
 
     Route::get('/my-school/notices','NoticeBoardController@indexSchool');
@@ -251,6 +257,8 @@ Route::group([
 
     //web push subscriptions
 
+    Route::get('/push-subscriptions/vapid-public-key', 'PushSubscriptionController@vapidPublicKey');
+
     Route::post('/push-subscriptions', 'PushSubscriptionController@store');
 
     Route::post('/push-subscriptions/delete', 'PushSubscriptionController@destroy');
@@ -260,6 +268,14 @@ Route::group([
 });
 
 Route::get('/bloodGroup/list','Api\TestController@getBloodGroup');
+
+//Parent fee payment initiation (PWA contract: POST /api/payments)
+
+Route::post('/payments', 'Api\PaymentController@store')->middleware('auth:sanctum');
+
+//VAPID public key at the exact PWA path (mirror of the v2 route)
+
+Route::get('/push-subscriptions/vapid-public-key', 'Api\PushSubscriptionController@vapidPublicKey')->middleware('auth:sanctum');
 
 Route::get('/get/country','Api\UserprofileController@country');
 
