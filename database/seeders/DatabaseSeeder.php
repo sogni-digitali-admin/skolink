@@ -45,6 +45,9 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTeacherTableSeeder::class);  //test
        $this->call(StandardsLinkTableSeeder::class); //test //
         $this->call(UsersStudentTableSeeder::class);  //test
+        if ($preset === 'mauritius_primary') {
+            $this->call(MauritiusFeesSeeder::class);
+        }
 
         $this->call(SubscriptionsTableSeeder::class);  //test //
 
