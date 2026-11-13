@@ -53,17 +53,17 @@ class CredentialsUpdateRequest extends FormRequest
       
        if(request('user_group')==7)
        {
-        $rules['mobile_no']='required|numeric|digits:10|check_unique_mob';
+        $rules['mobile_no']='required|' . $this->phoneRule() . '|check_unique_mob';
         $rules['email']='nullable|email|check_unique_email';
        }
        elseif(request('user_group')==5 || request('user_group')==8 || request('user_group')==8 || request('user_group')==10 || request('user_group')==11 || request('user_group')==12 )
        {
-        $rules['mobile_no']='required|numeric|digits:10|check_unique_mob';
+        $rules['mobile_no']='required|' . $this->phoneRule() . '|check_unique_mob';
         $rules['email']='required|email|check_unique_email';
        }
        else
        {
-        $rules['mobile_no']='nullable|numeric|digits:10|check_unique_mob';
+        $rules['mobile_no']='nullable|' . $this->phoneRule() . '|check_unique_mob';
         $rules['email']='nullable|email|check_unique_email';
        }
 
@@ -72,6 +72,16 @@ class CredentialsUpdateRequest extends FormRequest
 
        return $rules;
 
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()

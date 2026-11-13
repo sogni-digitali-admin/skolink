@@ -39,11 +39,21 @@ class ContactRequest extends FormRequest
         'emailid'     => 'required|email',
         'serve_at'    => 'required',
         'role'        => 'required|check_role',
-        'contact_no'  => 'required|numeric|digits:10',
+        'contact_no'  => 'required|' . $this->phoneRule(),
         // 'message'  => 'required',
         'select'      => 'required',
         //'checkbox'  => 'required',
       ];
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()

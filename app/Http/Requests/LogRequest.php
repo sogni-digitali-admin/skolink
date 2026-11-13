@@ -46,9 +46,9 @@ class LogRequest extends FormRequest
             'call_type'=>'required',
                      
           
-            //'incoming_number'=>'nullable|numeric|digits:10',
+            //'incoming_number'=>'nullable|' . $this->phoneRule(),
             
-           // 'outgoing_number'=>'nullable|numeric|digits:10',
+           // 'outgoing_number'=>'nullable|' . $this->phoneRule(),
             
             'call_date'    => 'required|date|check_call_date',
           
@@ -57,17 +57,27 @@ class LogRequest extends FormRequest
         if(request('call_type')== "outgoing")
         { 
            $rules['calling_purpose']='required';
-           $rules['outgoing_number']='required|numeric|digits:10';
+           $rules['outgoing_number']='required|' . $this->phoneRule();
            
         }
         else
         {
-           $rules['incoming_number']='required|numeric|digits:10'; 
+           $rules['incoming_number']='required|' . $this->phoneRule(); 
         }
 
 
         return $rules;
            
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()
@@ -79,10 +89,10 @@ class LogRequest extends FormRequest
             'call_type.required'     =>'Select call type',
             'incoming_number.required'   =>'Incoming Number is required',
             'incoming_number.numeric'   =>'Enter Valid Number',
-            'incoming_number.digits:10' =>'The number should not be greater than 10 digits',
+            'incoming_number.regex'   =>'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'outgoing_number.required'   =>'Outgoing Number is required',
             'outgoing_number.numeric'   =>'Enter Valid Number',
-            'outgoing_number.digits:10' =>'The number should not be greater than 10 digits',
+            'outgoing_number.regex'   =>'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'call_date.required'=>'Select Date',
             'call_date.check_task_date'    =>  'Enter valid Call Date',
            

@@ -88,11 +88,11 @@ class Kernel extends ConsoleKernel
                  ->withoutOverlapping();
 
         $schedule->command('gego:checksms')
-                 ->hourly()
+                 ->everyMinute()
                  ->withoutOverlapping();
 
         $schedule->command('gego:checkmail')
-                 ->hourly()
+                 ->everyMinute()
                  ->withoutOverlapping();
 
         $schedule->command('gego:checksendmail')

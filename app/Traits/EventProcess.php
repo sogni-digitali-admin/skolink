@@ -191,7 +191,11 @@ trait EventProcess
                 $message      =  'Dear Parent, Kindly make a note that your child '.$student_name.' is absent for school today.';
                 $executed_at  =   $date;
                 //$mail         =   NULL;
-                $data         =   'absent_message';
+                $data         =   [
+                    'type'         => 'absent_message',
+                    'student_name' => $student_name,
+                    'date'         => $date,
+                ];
                 event(new UserReminderEvent($school_id,$from,$mobile_no,$email,$subject,$message,$entity_id,$entity_name,$via,$data,$executed_at));
             }
         }

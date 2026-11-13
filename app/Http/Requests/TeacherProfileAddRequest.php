@@ -112,7 +112,7 @@ class TeacherProfileAddRequest extends FormRequest
             'firstname'             => 'required|check_firstname|max:15',
             'lastname'              => 'nullable|check_lastname|max:15',
             'date_of_birth'         => 'required|date|check_date_of_birth',
-            'mobile_no'             => 'required|numeric|digits:10|checkunique_mobile',
+            'mobile_no'             => 'required|' . $this->phoneRule() . '|checkunique_mobile',
             'email'                 => 'nullable|email|checkunique_email',
             'gender'                => 'required',
             'blood_group'           => 'required',
@@ -141,6 +141,16 @@ class TeacherProfileAddRequest extends FormRequest
         }*/
 
         return $rules;
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()

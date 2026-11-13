@@ -81,7 +81,7 @@ class CheckMail extends Command
                             event(new BirthdayReminderMailEvent($reminder));
                         }
 
-                        elseif($reminder->data == 'absent_message')
+                        elseif($reminder->data == 'absent_message' || (is_array($reminder->data) && ($reminder->data['type'] ?? '') === 'absent_message'))
                         {   //dump('elseif');
                             event(new AbsentReminderMailEvent($reminder));
                         }

@@ -38,7 +38,7 @@ class TelephoneDirectoryRequest extends FormRequest
             //
             'name'          =>  'required|check_name',
             'designation'   =>  'required|check_designation',
-            'phone_number'  =>  'required|numeric|digits:10',
+            'phone_number'  =>  'required|' . $this->phoneRule(),
         ];
     }
 
@@ -54,7 +54,17 @@ class TelephoneDirectoryRequest extends FormRequest
 
             'phone_number.required'         => 'Phone Number Is Required',
             'phone_number.numeric'          => 'Phone Number Should Be Numeric',
-            'phone_number.digits:10'        => 'Phone Number Should Be 10 Digits',
+            'phone_number.regex'            => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
         ];
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 }

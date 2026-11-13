@@ -50,7 +50,10 @@ class LoginController extends Controller
 
                 $user   = TeacherUser::where([['id',$auth_user->id],['school_id',$auth_user->school_id]])->first();
                      
-                $user->platform_token = $request->device_name;
+                // FCM relic: platform_token is no longer written. Web push
+                // uses the push_subscriptions table (VAPID) via
+                // /api/push-subscriptions; the column stays for legacy data.
+                //$user->platform_token = $request->device_name;
 
                 $user->device_id = $request->device_id;
 

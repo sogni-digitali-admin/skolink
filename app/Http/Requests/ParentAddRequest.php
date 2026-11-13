@@ -98,8 +98,8 @@ class ParentAddRequest extends FormRequest
                 'firstname'         => 'required|check_firstname|max:35',
                 'lastname'          => 'nullable|check_lastname|max:15',
                 'email'             => 'nullable|email|checkunique_email',
-                'mobile_no'         => 'required|numeric|digits:10|checkunique_mobile',
-                'alternate_no'      => 'nullable|numeric|digits:10',
+                'mobile_no'         => 'required|' . $this->phoneRule() . '|checkunique_mobile',
+                'alternate_no'      => 'nullable|' . $this->phoneRule(),
                 'profession'        => 'required',
                 'relation'          => 'required',
             ];
@@ -121,6 +121,16 @@ class ParentAddRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
+    }
+
     public function messages()
     {
         $messages = 
@@ -140,11 +150,11 @@ class ParentAddRequest extends FormRequest
 
             'mobile_no.required'                        => 'Mobile Number Is Required',
             'mobile_no.numeric'                         => 'Mobile Number Should Be Numeric',
-            'mobile_no.digits:10'                       => 'Mobile Number Should Be 10 Digits',
+            'mobile_no.regex'                           => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'mobile_no.checkunique_mobile'              => 'Mobile Number Already In Use. Enter Different Mobile Number',
 
             'alternate_no.numeric'                      => 'Alternate Number Should Be Numeric',
-            'alternate_no.digits:10'                    => 'Alternate Number Should Be 10 Digits',
+            'alternate_no.regex'                        => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'alternate_no.checkunique_mobile'           => 'Mobile Number Already In Use. Enter Different Mobile Number',
 
             'profession.required'                       => 'Occupation Is Required',

@@ -36,7 +36,10 @@ class UserController extends Controller
         {
             $user = User::where([['id',Auth::id()],['school_id',Auth::user()->school_id]])->first();
             
-            $user->platform_token  = $request->device_name;
+            // FCM relic: platform_token is no longer written. Web push
+            // uses the push_subscriptions table (VAPID) via
+            // /api/push-subscriptions; the column stays for legacy data.
+            //$user->platform_token  = $request->device_name;
              
             $user->save();
 
