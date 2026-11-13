@@ -3,10 +3,9 @@
 namespace App\Listeners;
 
 use App\Events\ReminderMailEvent;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Notifications\EventReminderNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ReminderMail;
+use Illuminate\Support\Facades\Notification;
 
 class ReminderMailListener implements ShouldQueue
 {
@@ -23,11 +22,25 @@ class ReminderMailListener implements ShouldQueue
     /**
      * Handle the event.
      *
+     * Sends the event reminder through the notification ladder
+     * (web push -> mail -> database) to the user matching the
+     * reminder recipient. Falls back to an on-demand mail
+     * notification when no user account matches the address.
+     *
      * @param  ReminderMailEvent  $event
      * @return void
      */
     public function handle(ReminderMailEvent $event)
     {
-        Mail::to($event->reminder->to)->queue(new ReminderMail($event->reminder));
+        $user = $event->reminder->user;
+
+        if ($user) {
+            $user->notify(new EventReminderNotification($event->reminder));
+
+            return;
+        }
+
+        Notification::route('mail', $event->reminder->to)
+            ->notify(new EventReminderNotification($event->reminder));
     }
 }

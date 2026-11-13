@@ -69,11 +69,11 @@ class CheckSms extends Command
                             $events=Events::where('id',$queue->entity_id)->first();
                             $this->sendSmsNotification($queue->to,$queue->data['date'],$queue->data['location']);
                         }
-                        else if($queue->data == 'absent_message')
+                        else if($queue->data == 'absent_message' || (is_array($queue->data) && ($queue->data['type'] ?? '') === 'absent_message'))
                         {
                             $this->sendAbsentRecord($queue->to,$queue->message,$school->name);
                         }
-                        else if($queue->data['type'] == 'birthday')
+                        else if(($queue->data['type'] ?? '') == 'birthday')
                         {
                             $this->sendBirthday($queue->to,$queue->data['message'],$school->name);
                         }

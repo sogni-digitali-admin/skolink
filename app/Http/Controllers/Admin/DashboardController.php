@@ -14,7 +14,7 @@ use App\Http\Resources\Task as TaskResource;
 use App\Http\Resources\Fee as FeeResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Events\SinglePushEvent;
+use App\Notifications\FeeReminderNotification;
 use App\Models\StandardLink;
 use Illuminate\Http\Request;
 use App\Traits\LogActivity;
@@ -291,14 +291,11 @@ class DashboardController extends Controller
 
             foreach($user->parents as $parent)
             {
-                $array=[];
-
-                $array['school_id']  = Auth::user()->school_id;
-                $array['user_id']    = $parent->userParent->id;
-                $array['message']    = $feepayment->fee->name.' Fee Payment Is Pending.Last Date For Payment - '.date('d-m-Y',strtotime($feepayment->fee->end_date));
-                $array['type']       = 'private message';
-
-                event(new SinglePushEvent($array));
+                $parent->userParent->notify(new FeeReminderNotification(
+                    $feepayment->fee->name,
+                    date('d-m-Y',strtotime($feepayment->fee->end_date)),
+                    $user->name
+                ));
             }
             $message = trans('messages.send_fee_reminder_msg');
 

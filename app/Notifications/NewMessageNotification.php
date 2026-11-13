@@ -53,7 +53,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
         return new WhatsAppMessage(
             template: 'school_notice',
             variables: ['message' => (string) $this->message],
-            locale: data_get($notifiable, 'locale') ?: config('app.locale'),
+            locale: $this->locale($notifiable),
         );
     }
 
@@ -65,10 +65,14 @@ class NewMessageNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $locale = $this->locale($notifiable);
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject(__('New Message', [], $locale))
+            ->markdown('emails.new_message', [
+                'message' => (string) $this->message,
+                'locale' => $locale,
+            ]);
     }
 
     /**
@@ -84,5 +88,18 @@ class NewMessageNotification extends Notification implements ShouldQueue
             //'type'  =>  'newmessage', 
             'data'  =>  $this->message,
         ];
+    }
+
+    /**
+     * Resolve the notifiable's locale: userprofiles.locale first,
+     * falling back to config('app.locale').
+     *
+     * @param  mixed  $notifiable
+     * @return string
+     */
+    protected function locale($notifiable)
+    {
+        return data_get($notifiable, 'userprofile.locale')
+            ?: (data_get($notifiable, 'locale') ?: config('app.locale'));
     }
 }

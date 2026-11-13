@@ -77,5 +77,21 @@
     "Print": "Imprimer",
     "Close": "Fermer",
     "Save": "Enregistrer",
-    "No Records Found": "Aucun enregistrement trouvé"
+    "No Records Found": "Aucun enregistrement trouvé",
+
+    "Absentee Alert": "Alerte d'absence",
+    "Dear Parent,": "Cher parent,",
+    "Kindly make a note that your child :name was marked absent from school on :date.": "Veuillez noter que votre enfant :name a été marqué(e) absent(e) de l'école le :date.",
+    "Please contact the school office if this absence was not expected.": "Veuillez contacter le secrétariat de l'école si cette absence n'était pas prévue.",
+    "Fee Payment Reminder": "Rappel de paiement des frais",
+    "The payment for :fee is pending. Last date for payment: :date.": "Le paiement des frais « :fee » est en attente. Date limite de paiement : :date.",
+    "The payment for :fee (student: :student) is pending. Last date for payment: :date.": "Le paiement des frais « :fee » pour :student est en attente. Date limite de paiement : :date.",
+    "Kindly settle the payment before the due date to avoid any inconvenience.": "Merci de bien vouloir régler le paiement avant la date limite afin d'éviter tout désagrément.",
+    "Event Reminder": "Rappel d'événement",
+    "Location": "Lieu",
+    "Start Date": "Date de début",
+    "End Date": "Date de fin",
+    "New Message": "Nouveau message",
+    "Log in to the parent portal or the app for more details.": "Connectez-vous au portail des parents ou à l'application pour plus de détails.",
+    "Regards,": "Cordialement,"
 }

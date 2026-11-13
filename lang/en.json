@@ -1,0 +1,17 @@
+{
+    "Absentee Alert": "Absentee Alert",
+    "Dear Parent,": "Dear Parent,",
+    "Kindly make a note that your child :name was marked absent from school on :date.": "Kindly make a note that your child :name was marked absent from school on :date.",
+    "Please contact the school office if this absence was not expected.": "Please contact the school office if this absence was not expected.",
+    "Fee Payment Reminder": "Fee Payment Reminder",
+    "The payment for :fee is pending. Last date for payment: :date.": "The payment for :fee is pending. Last date for payment: :date.",
+    "The payment for :fee (student: :student) is pending. Last date for payment: :date.": "The payment for :fee (student: :student) is pending. Last date for payment: :date.",
+    "Kindly settle the payment before the due date to avoid any inconvenience.": "Kindly settle the payment before the due date to avoid any inconvenience.",
+    "Event Reminder": "Event Reminder",
+    "Location": "Location",
+    "Start Date": "Start Date",
+    "End Date": "End Date",
+    "New Message": "New Message",
+    "Log in to the parent portal or the app for more details.": "Log in to the parent portal or the app for more details.",
+    "Regards,": "Regards,"
+}
