@@ -117,7 +117,7 @@ class VisitorLogRequest extends FormRequest
         else
         { 
             $rules['name']              = 'required|max:20|check_name';
-            $rules['contact_number']    = 'required|numeric|digits:10';
+            $rules['contact_number']    = 'required|' . $this->phoneRule();
             /*$rules['company_name']='required';
             $rules['address']='required';*/
         }
@@ -128,6 +128,16 @@ class VisitorLogRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()
@@ -162,7 +172,7 @@ class VisitorLogRequest extends FormRequest
 
             'contact_number.required'               =>  'Contact Number Is Required',
             'contact_number.numeric'                =>  'Enter Valid Contact Number',
-            'contact_number.digits:10'              =>  'Contact Number Should Be Of 10 digits',
+            'contact_number.regex'                  =>  'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
 
             'date_of_visit.required'                =>  'Date Of Visit Is Required',
             'date_of_visit.after'                   =>  'Date Of Visit Should Be Greater Than '.$start_date,

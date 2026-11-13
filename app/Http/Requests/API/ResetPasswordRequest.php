@@ -50,7 +50,7 @@ class ResetPasswordRequest extends FormRequest
         });
 
         return [
-            'mobile_no' =>  'required|numeric|digits:10|check_mobile_no|check_active',
+            'mobile_no' =>  'required|' . $this->phoneRule() . '|check_mobile_no|check_active',
             'usergroup' =>  'required',
         ];
     }
@@ -71,9 +71,19 @@ class ResetPasswordRequest extends FormRequest
         return[
             'mobile_no.required'        =>  'Mobile Number Is Required',
             'mobile_no.numeric'         =>  'Mobile Number Should Be Numeric',
-            'mobile_no.digits:10'       =>  'Mobile Number Should Be 10 Digits',
+            'mobile_no.regex'           =>  'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'mobile_no.check_mobile_no' =>  'Mobile Number Is Not Registered',
             'mobile_no.check_active'    =>  $status,
         ];
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 }

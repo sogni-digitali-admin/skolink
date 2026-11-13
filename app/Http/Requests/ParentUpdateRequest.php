@@ -65,7 +65,7 @@ class ParentUpdateRequest extends FormRequest
             //
             'firstname'         => 'required|alpha_spaces|max:15',
             'lastname'          => 'nullable|alpha_spaces|max:15',
-            'alternate_no'      => 'nullable|numeric|digits:10',
+            'alternate_no'      => 'nullable|' . $this->phoneRule(),
             'profession'        => 'required',
             'relation'          => 'required',
         ];
@@ -87,6 +87,16 @@ class ParentUpdateRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
+    }
+
     public function messages()
     {
         $messages = 
@@ -99,7 +109,7 @@ class ParentUpdateRequest extends FormRequest
             'lastname.max:15'                           => 'Last Name Should Be Atmost 15 characters',
 
             'alternate_no.numeric'                      => 'Alternate Number Should Be Numeric',
-            'alternate_no.digits:10'                    => 'Alternate Number Should Be 10 Digits',
+            'alternate_no.regex'                        => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'alternate_no.checkunique_mobile'           => 'Mobile Number Already In Use. Enter Different Mobile Number',
 
             'profession.required'                       => 'Occupation Is Required',

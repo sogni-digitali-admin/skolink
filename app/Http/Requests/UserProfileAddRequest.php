@@ -133,7 +133,7 @@ class UserProfileAddRequest extends FormRequest
             'firstname'                 => 'required|check_firstname|max:15',
             'lastname'                  => 'nullable|check_lastname|max:15',
             'email'                     => 'nullable|email|checkunique_email',
-            'mobile_no'                 => 'nullable|numeric|digits:10|check_mobile_no',
+            'mobile_no'                 => 'nullable|' . $this->phoneRule() . '|check_mobile_no',
             'date_of_birth'             => 'required|date|check_date_of_birth',
             'gender'                    => 'required',
             'blood_group'               => 'required',
@@ -170,7 +170,7 @@ class UserProfileAddRequest extends FormRequest
         if( (request('mode_of_transport') == 'auto') || (request('mode_of_transport') == 'rickshaw') || (request('mode_of_transport') == 'taxi') )
         {
             $rules['driver_name']           = 'nullable|check_driver_name';
-            $rules['driver_contact_number'] = 'nullable|numeric|digits:10|check_unique_mobile';
+            $rules['driver_contact_number'] = 'nullable|' . $this->phoneRule() . '|check_unique_mobile';
         }
 
         for($i=0 ; $i<Request('count') ; $i++)
@@ -201,6 +201,16 @@ class UserProfileAddRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
+    }
+
     public function messages()
     {
         $start = date('01-06-Y',strtotime('-20 years',strtotime(date('Y-m-d'))));
@@ -221,7 +231,7 @@ class UserProfileAddRequest extends FormRequest
 
             'mobile_no.required'                                => 'Mobile Number Is Required',
             'mobile_no.numeric'                                 => 'Mobile Number Should Be Numeric',
-            'mobile_no.digits:10'                               => 'Mobile Number Should Be 10 Digits',
+            'mobile_no.regex'                                   => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'mobile_no.check_mobile_no'                         => 'Mobile Number Already In Use. Enter Different Mobile Number',
 
             'date_of_birth.required'                            => 'Date Of Birth Is Required',
@@ -290,7 +300,7 @@ class UserProfileAddRequest extends FormRequest
 
             'driver_contact_number.required'                    => 'Driver Contact Number Is Required',
             'driver_contact_number.numeric'                     => 'Driver Contact Number Should Be Numeric',
-            'driver_contact_number.digits:10'                   => 'Driver Contact Number should be 10 digits',
+            'driver_contact_number.regex'                       => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'driver_contact_number.check_unique_mobile'         => 'Contact Number Already In Use. Enter Different Contact Number',
 
             'siblings.required'                                 => 'Siblings Is Required',

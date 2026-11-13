@@ -85,7 +85,7 @@ class DetailRequest extends FormRequest
             'affiliation_no'        =>  'required|numeric',
             'date_of_establishment' =>  'required|check_date',
             'board'                 =>  'required',
-            'landline_no'           =>  'required|numeric|digits:10',
+            'landline_no'           =>  'required|' . $this->phoneRule(),
             'about_us'              =>  'required|max:250',
             'country_id'            =>  'required',
             'state_id'              =>  'required',
@@ -107,6 +107,16 @@ class DetailRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()

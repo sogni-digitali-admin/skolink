@@ -145,7 +145,7 @@ class UserProfileUpdateRequest extends FormRequest
         if( (request('mode_of_transport') == 'auto') || (request('mode_of_transport') == 'rickshaw') || (request('mode_of_transport') == 'taxi') )
         {
             $rules['driver_name']           = 'required|check_driver_name';
-            $rules['driver_contact_number'] = 'required|numeric|digits:10';
+            $rules['driver_contact_number'] = 'required|' . $this->phoneRule();
         }
 
         for($i=0 ; $i<Request('count') ; $i++)
@@ -174,6 +174,16 @@ class UserProfileUpdateRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()
@@ -254,7 +264,7 @@ class UserProfileUpdateRequest extends FormRequest
 
             'driver_contact_number.required'                    => 'Driver Contact Number Is Required',
             'driver_contact_number.numeric'                     => 'Driver Contact Number Should Be Numeric',
-            'driver_contact_number.digits:10'                   => 'Driver Contact Number Should Be 10 Digits',
+            'driver_contact_number.regex'                       => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
             'driver_contact_number.check_unique_mobile'         => 'Contact Number Already In Use. Enter Different Contact Number',
 
             'siblings.required'                                 => 'Siblings Is Required',

@@ -95,7 +95,7 @@ class RegisterRequest extends FormRequest
             'state'                 =>  'required',
             'pincode'               =>  'required',*/
             'name'                  =>  'required|max:15|checkunique_name|check_name',
-            'mobile_no'             =>  'required|numeric|digits:10|checkunique_mobile',
+            'mobile_no'             =>  'required|' . $this->phoneRule() . '|checkunique_mobile',
             'email'                 =>  'required|email|checkunique_email',
             'password'              =>  'required|min:8|confirmed', 
             'termsandcondn'         =>  'required', 
@@ -105,6 +105,16 @@ class RegisterRequest extends FormRequest
         $rules['g-recaptcha-response']=['required', new ValidRecaptcha];
 
         return $rules;
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 
     public function messages()
@@ -131,7 +141,7 @@ class RegisterRequest extends FormRequest
 
             'mobile_no.required'                    =>  'Mobile Number is required.OTP will be sent',
             'mobile_no.numeric'                     =>  'Mobile Number should be numeric.OTP will be sent',
-            'mobile_no.digits:10'                   =>  'Mobile Number should be 10 digits.OTP will be sent',
+            'mobile_no.regex'                       =>  'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230). OTP will be sent',
             'mobile_no.checkunique_mobile'          =>  'Mobile Number already exists. Enter different Mobile Number.OTP will be sent',
 
             'email.required'                        =>  'Email ID is required.Verification Mail will be sent',

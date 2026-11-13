@@ -39,7 +39,7 @@ class AdmissionPersonalRequest extends FormRequest
         if( (request('mode_of_transport') == 'auto') || (request('mode_of_transport') == 'rickshaw') || (request('mode_of_transport') == 'taxi') )
         { 
             $rules['driver_name']           =  'required|check_driver_name';
-            $rules['driver_mobile_number']  =  'required|numeric|digits:10';
+            $rules['driver_mobile_number']  =  'required|' . $this->phoneRule();
         }
 
         return $rules;
@@ -60,7 +60,17 @@ class AdmissionPersonalRequest extends FormRequest
 
             'driver_mobile_number.required'         => 'Driver Mobile No. Required',
             'driver_mobile_number.numeric'          => 'Enter Valid Mobile Number',
-            'driver_mobile_number.digits:10'        => 'Mobile Number Should Be 10 Digits',
+            'driver_mobile_number.regex'            => 'Enter a valid Mauritian phone number (8 digits, optionally prefixed with +230)',
         ];
+    }
+
+    /**
+     * Country-driven phone validation rule (default: Mauritius +230 / 8 digits).
+     *
+     * @return string
+     */
+    protected function phoneRule()
+    {
+        return 'regex:' . config('school.phone.validation_regex', '/^(\+230)?[0-9]{8}$/');
     }
 }
