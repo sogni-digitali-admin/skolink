@@ -65,6 +65,59 @@ services:
     networks:
       - laravel
 
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school_queue
+    working_dir: /var/www
+    user: "0:0"
+    volumes:
+      - ./:/var/www
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=school
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - QUEUE_CONNECTION=database
+    command: php artisan queue:work database --sleep=3 --tries=3 --queue=default,notification
+    restart: unless-stopped
+    depends_on:
+      - app
+      - db
+    networks:
+      - laravel
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school_scheduler
+    working_dir: /var/www
+    user: "0:0"
+    volumes:
+      - ./:/var/www
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - APP_ENV=local
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=school
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    command: sh -c 'while true; do php artisan schedule:run; sleep 60; done'
+    restart: unless-stopped
+    depends_on:
+      - app
+      - db
+    networks:
+      - laravel
+
   nginx:
     image: nginx:latest
     container_name: laravel_nginx
