@@ -24,10 +24,22 @@ use App\Models\Message;
  */
 class Conversation extends Model
 {
+    /**
+     * The table associated with the model.
+     *
+     * The legacy `conversations` table belongs to the old feedback
+     * messaging pair (user_one/user_two); the chat stack this model
+     * backs lives in conversation_chat / conversation_user /
+     * conversation_messages.
+     *
+     * @var string
+     */
+    protected $table = 'conversation_chat';
 
 	protected $fillable = [
 		'last_message_at',
-         'uuid'
+         'uuid',
+         'school_id'
 
 	];
 
@@ -79,5 +91,46 @@ class Conversation extends Model
     public function messages()
     {
     	return $this->hasMany('App\Models\Message')->latest();
+    }
+
+    /**
+     * Check whether the given user participates in this conversation.
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isParticipant($userId)
+    {
+        return $this->users()->where('users.id', $userId)->exists();
+    }
+
+    /**
+     * Get the other participant of a 1:1 conversation.
+     *
+     * @param \App\Models\User $user
+     * @return \App\Models\User|null
+     */
+    public function otherParticipant($user)
+    {
+        return $this->users()->where('users.id', '!=', $user->id)->first();
+    }
+
+    /**
+     * Count messages sent by others after the user's pivot read_at marker.
+     *
+     * @param \App\Models\User $user
+     * @return int
+     */
+    public function unreadCountFor($user)
+    {
+        $pivot = $this->users()->where('users.id', $user->id)->first()?->pivot;
+
+        $query = $this->messages()->where('user_id', '!=', $user->id);
+
+        if ($pivot && $pivot->read_at) {
+            $query->where('created_at', '>', $pivot->read_at);
+        }
+
+        return $query->count();
     }
 }
