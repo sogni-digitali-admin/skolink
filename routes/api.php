@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
+
 @include('teacherapi.php');
 
 Route::post('/parent/login', 'Api\TokenController@issueToken');
@@ -263,7 +266,21 @@ Route::group([
 
     Route::post('/push-subscriptions/delete', 'PushSubscriptionController@destroy');
 
-    
+    //Messaging (Skolink 1:1 chat; serves parent AND teacher Sanctum tokens)
+
+    Route::get('/conversations/contacts', 'MessagingController@contacts');
+
+    Route::get('/conversations/unread-count', 'MessagingController@unreadCount');
+
+    Route::get('/conversations', 'MessagingController@index');
+
+    Route::post('/conversations', 'MessagingController@store');
+
+    Route::get('/conversations/{conversation}', 'MessagingController@show');
+
+    Route::post('/conversations/{conversation}/messages', 'MessagingController@storeMessage');
+
+    Route::post('/conversations/{conversation}/read', 'MessagingController@markRead');
 
 });
 
@@ -276,6 +293,12 @@ Route::post('/payments', 'Api\PaymentController@store')->middleware('auth:sanctu
 //VAPID public key at the exact PWA path (mirror of the v2 route)
 
 Route::get('/push-subscriptions/vapid-public-key', 'Api\PushSubscriptionController@vapidPublicKey')->middleware('auth:sanctum');
+
+//Broadcasting auth for Sanctum token clients (PWA Echo hitting /api/broadcasting/auth)
+
+Route::post('/broadcasting/auth', function (Request $request) {
+    return Broadcast::auth($request);
+})->middleware('auth:sanctum');
 
 Route::get('/get/country','Api\UserprofileController@country');
 
