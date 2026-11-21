@@ -83,6 +83,10 @@ trait AuthenticatesUsers
                 ->orWhere('registration_number', request('email'))
                 ->first();
 
+            if (!$users) {
+                return FALSE;
+            }
+
             if ($users->usergroup_id == 1) {
                 return TRUE;
             }
@@ -117,8 +121,14 @@ trait AuthenticatesUsers
          * @return bool True if user is active
          */
         Validator::extend('checkactive', function ($attribute, $value, $parameters, $validator) {
-            $users = User::where('email', request('email'))->with('userprofile')->first();
-            return $users->userprofile->status != 'inactive';
+            $users = User::where('email', request('email'))
+                ->orWhere('mobile_no', request('email'))
+                ->orWhere('name', request('email'))
+                ->orWhere('registration_number', request('email'))
+                ->with('userprofile')->first();
+            if (!$users) return false;
+            return $users->status !== 'inactive'
+                && optional($users->userprofile)->status !== 'inactive';
         }, 'You are suspended by site admin');
 
         /**
@@ -132,8 +142,14 @@ trait AuthenticatesUsers
          * @return bool True if user status is not 'exit'
          */
         Validator::extend('checkexit', function ($attribute, $value, $parameters, $validator) {
-            $users = User::where('email', request('email'))->with('userprofile')->first();
-            return $users->userprofile->status != 'exit';
+            $users = User::where('email', request('email'))
+                ->orWhere('mobile_no', request('email'))
+                ->orWhere('name', request('email'))
+                ->orWhere('registration_number', request('email'))
+                ->with('userprofile')->first();
+            if (!$users) return false;
+            return $users->status !== 'exit'
+                && optional($users->userprofile)->status !== 'exit';
         }, 'You have exited this school');
 
         $this->validate($request, [
