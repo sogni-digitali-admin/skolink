@@ -129,7 +129,7 @@ export type MessageHandler = (payload: MessageSentPayload) => void
 export function subscribeConversation(uuid: string, handler: MessageHandler): () => void {
   if (!echo) return () => undefined
   const channelName = `conversation.${uuid}`
-  echo.private(channelName).listen('MessageSent', (payload: MessageSentPayload) => {
+  echo.private(channelName).listen('.MessageSent', (payload: MessageSentPayload) => {
     handler(payload)
   })
   return () => echo?.leave(channelName)
