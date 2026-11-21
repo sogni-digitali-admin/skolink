@@ -17,14 +17,32 @@ class NewMessageNotification extends Notification implements ShouldQueue
     public $message;
 
     /**
+     * Optional chat context: the sender and conversation the message
+     * belongs to. NULL for the original school-notice use.
+     *
+     * @var \App\Models\User|null
+     */
+    public $sender;
+
+    /**
+     * @var \App\Models\Conversation|null
+     */
+    public $conversation;
+
+    /**
      * Create a new notification instance.
      *
+     * @param string $message
+     * @param \App\Models\User|null $sender
+     * @param \App\Models\Conversation|null $conversation
      * @return void
      */
-    public function __construct($message)
+    public function __construct($message, $sender = null, $conversation = null)
     {
         //
         $this->message = $message;
+        $this->sender = $sender;
+        $this->conversation = $conversation;
     }
 
     /**
@@ -87,6 +105,8 @@ class NewMessageNotification extends Notification implements ShouldQueue
             //
             //'type'  =>  'newmessage', 
             'data'  =>  $this->message,
+            'sender_name'       => $this->sender ? $this->sender->name : null,
+            'conversation_uuid' => $this->conversation ? $this->conversation->uuid : null,
         ];
     }
 

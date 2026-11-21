@@ -25,6 +25,16 @@ use App\Models\User;
  */
 class Message extends Model
 {
+	/**
+	 * The table associated with the model.
+	 *
+	 * Chat messages (the legacy `messages` table belongs to the old
+	 * feedback messaging pair and is unused by the chat stack).
+	 *
+	 * @var string
+	 */
+	protected $table = 'conversation_messages';
+
 	protected $fillable = [
 		'user_id',
 		'body'
