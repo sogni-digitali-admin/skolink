@@ -13,6 +13,8 @@ const router = useRouter()
 const auth = useAuthStore()
 const messaging = useMessagingStore()
 
+const listLoading = ref(true)
+
 const basePath = computed(() => (auth.role === 'teacher' ? '/t/messages' : '/p/messages'))
 
 function initials(name: string): string {
@@ -102,7 +104,9 @@ async function startChat(contact: ConversationContact): Promise<void> {
 
 onMounted(() => {
   void messaging.start()
-  void messaging.loadConversations()
+  void messaging.loadConversations().finally(() => {
+    listLoading.value = false
+  })
 })
 </script>
 
@@ -117,7 +121,8 @@ onMounted(() => {
       {{ t('common.offlineHint') }}
     </div>
 
-    <div v-if="!messaging.conversations.length" class="empty-state">
+    <div v-if="listLoading" class="spinner" role="status" />
+    <div v-else-if="!messaging.conversations.length" class="empty-state">
       {{ t('messages.empty') }}
     </div>
 

@@ -51,20 +51,20 @@ function scrollToBottom(smooth = false): void {
   })
 }
 
+function roleLabel(role: string): string {
+  const key = `messages.role.${role}`
+  return t(key) === key ? role : t(key)
+}
+
 /** Merge the server truth with still-unconfirmed optimistic bubbles. */
 function reconcile(serverMessages: ConversationMessage[]): void {
-  const confirmed = new Set<number>()
   const kept: ThreadMessage[] = serverMessages.map((m) => ({ ...m }))
   for (const temp of messages.value) {
     if (!temp.pending) continue
     const matched = serverMessages.some(
       (m) => m.isOwn && m.body === temp.body && Math.abs(new Date(m.createdAt).getTime() - new Date(temp.createdAt).getTime()) < 60_000,
     )
-    if (!matched) {
-      kept.push(temp)
-    } else {
-      confirmed.add(temp.id)
-    }
+    if (!matched) kept.push(temp)
   }
   messages.value = kept
 }
@@ -227,6 +227,8 @@ watch(
   (active) => {
     if (active) {
       stopThreadPolling()
+      realtimeUnsub?.()
+      realtimeUnsub = null
       void subscribeThread()
     } else {
       realtimeUnsub?.()
@@ -267,7 +269,7 @@ onUnmounted(() => {
       <router-link :to="basePath" class="chat-back" :aria-label="t('common.back')">‹</router-link>
       <div class="grow">
         <div class="name">{{ other?.name ?? '…' }}</div>
-        <div v-if="other" class="meta">{{ other.role }}</div>
+        <div v-if="other" class="meta">{{ roleLabel(other.role) }}</div>
       </div>
     </div>
 
