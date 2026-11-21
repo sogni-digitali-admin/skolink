@@ -10,7 +10,6 @@ use App\Helpers\SiteHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
-use App\Models\StudentAcademic;
 use App\Models\StudentParentLink;
 use App\Models\Teacherlink;
 use App\Models\User;
@@ -383,6 +382,10 @@ class MessagingController extends Controller
     {
         $academicYear = SiteHelper::getAcademicYear($teacher->school_id);
 
+        if (!$academicYear) {
+            return false;
+        }
+
         return StudentParentLink::where('parent_id', $parent->id)
             ->where('school_id', $teacher->school_id)
             ->whereIn('student_id', function ($q) use ($teacher, $academicYear) {
@@ -411,6 +414,10 @@ class MessagingController extends Controller
     {
         $academicYear = SiteHelper::getAcademicYear($parent->school_id);
 
+        if (!$academicYear) {
+            return collect();
+        }
+
         $links = StudentParentLink::where('parent_id', $parent->id)
             ->where('school_id', $parent->school_id)
             ->with(['userStudent.userprofile', 'userStudent.studentAcademicLatest'])
@@ -418,7 +425,7 @@ class MessagingController extends Controller
 
         return $links->flatMap(function (StudentParentLink $link) use ($academicYear) {
             $student = $link->userStudent;
-            $standardLinkId = optional($student->studentAcademicLatest)->standardLink_id;
+            $standardLinkId = $student ? optional($student->studentAcademicLatest)->standardLink_id : null;
 
             if (!$standardLinkId) {
                 return [];
@@ -471,6 +478,10 @@ class MessagingController extends Controller
     {
         $academicYear = SiteHelper::getAcademicYear($teacher->school_id);
 
+        if (!$academicYear) {
+            return collect();
+        }
+
         $standardLinkIds = Teacherlink::where('teacher_id', $teacher->id)
             ->where('academic_year_id', $academicYear->id)
             ->pluck('standardLink_id');
@@ -498,7 +509,9 @@ class MessagingController extends Controller
                     return null;
                 }
 
-                return $this->participantShape($parentUser) + ['childName' => $this->displayName($link->userStudent)];
+                return $this->participantShape($parentUser) + [
+                    'childName' => $link->userStudent ? $this->displayName($link->userStudent) : null,
+                ];
             })
             ->filter()
             ->unique('id');
