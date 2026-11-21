@@ -161,6 +161,19 @@ export const useMessagingStore = defineStore('messaging', {
       }
     },
 
+    /**
+     * Thread-level MessageSent subscription (the open conversation screen).
+     * Returns a no-op unsubscribe while realtime is down — the view polls then.
+     */
+    async watchThread(
+      uuid: string,
+      handler: (payload: MessageSentPayload) => void,
+    ): Promise<() => void> {
+      const rt = await realtime()
+      if (!this.realtimeActive) return () => undefined
+      return rt.subscribeConversation(uuid, handler)
+    },
+
     dropChannels(): void {
       for (const off of channelUnsubs.values()) off()
       channelUnsubs.clear()

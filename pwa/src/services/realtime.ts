@@ -44,12 +44,18 @@ export function realtimeConnected(): boolean {
 }
 
 async function createEcho(): Promise<ReverbEcho> {
-  const { default: EchoClass } = await import('laravel-echo')
+  // Echo 2.x does not bundle the pusher-js client — pass it explicitly or the
+  // reverb connector throws "Pusher client not found" at connect time.
+  const [{ default: EchoClass }, { default: PusherClass }] = await Promise.all([
+    import('laravel-echo'),
+    import('pusher-js'),
+  ])
   const scheme = (import.meta.env.VITE_REVERB_SCHEME as string | undefined) ?? 'https'
   const defaultPort = scheme === 'https' ? 443 : 80
   const port = Number(import.meta.env.VITE_REVERB_PORT ?? defaultPort)
   const instance = new EchoClass<'reverb'>({
     broadcaster: 'reverb',
+    Pusher: PusherClass,
     key: import.meta.env.VITE_REVERB_APP_KEY as string,
     wsHost: (import.meta.env.VITE_REVERB_HOST as string | undefined) ?? window.location.hostname,
     wsPort: port,
