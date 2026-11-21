@@ -66,3 +66,12 @@ export const TEACHER_NOTICE_ADD = '/api/teacher/notice/add' // [assumed: no teac
 // ---------- Web Push — Phase 2 contract ----------
 export const PUSH_SUBSCRIPTIONS = '/api/push-subscriptions' // [assumed: Phase 2, POST/DELETE]
 export const VAPID_PUBLIC_KEY = '/api/push-subscriptions/vapid-public-key' // [assumed: returns { publicKey }]
+
+// ---------- Messaging — Phase contract (implemented by the backend agent verbatim) ----------
+export const CONVERSATIONS = '/api/v2/conversations' // [assumed] GET list, POST {user_id} → {uuid}
+export const CONVERSATION_CONTACTS = '/api/v2/conversations/contacts' // [assumed] GET
+export const CONVERSATION = (uuid: string) => `/api/v2/conversations/${uuid}` // [assumed] GET thread
+export const CONVERSATION_MESSAGES = (uuid: string) => `/api/v2/conversations/${uuid}/messages` // [assumed] POST {body}
+export const CONVERSATION_READ = (uuid: string) => `/api/v2/conversations/${uuid}/read` // [assumed] POST
+export const CONVERSATIONS_UNREAD_COUNT = '/api/v2/conversations/unread-count' // [assumed] GET → {count}
+export const BROADCASTING_AUTH = '/broadcasting/auth' // [assumed] Echo private-channel auth (Sanctum bearer)

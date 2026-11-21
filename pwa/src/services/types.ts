@@ -165,3 +165,56 @@ export interface PushSubscriptionBody {
   expirationTime: number | null
   keys: { p256dh: string; auth: string }
 }
+
+// ---------- Messaging (Phase contract — B3 implements this verbatim) ----------
+
+export interface ConversationParticipant {
+  id: number
+  name: string
+  role: string
+  avatarUrl?: string
+}
+
+export interface ConversationLastMessage {
+  body: string
+  createdAt: string
+  isOwn: boolean
+}
+
+export interface ConversationSummary {
+  uuid: string
+  otherParticipant: ConversationParticipant
+  lastMessage?: ConversationLastMessage
+  unreadCount: number
+  updatedAt: string
+}
+
+export interface ConversationMessage {
+  id: number
+  body: string
+  isOwn: boolean
+  createdAt: string
+  readAt?: string | null
+}
+
+export interface ConversationDetail {
+  uuid: string
+  otherParticipant: ConversationParticipant
+  messages: ConversationMessage[]
+}
+
+export interface ConversationContact {
+  id: number
+  name: string
+  role: string
+  childName?: string
+}
+
+/** Reverb `MessageSent` broadcast payload on PrivateChannel `conversation.{uuid}`. */
+export interface MessageSentPayload {
+  id: number
+  uuid: string
+  body: string
+  senderId: number
+  createdAt: string
+}
