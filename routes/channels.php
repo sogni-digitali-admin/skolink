@@ -11,6 +11,15 @@ Broadcast::channel('conversations.{id}', function ($user, $id) {
    
 });
 
+// Skolink messaging API: private channel per 1:1 conversation (uuid key).
+Broadcast::channel('conversation.{uuid}', function ($user, $uuid) {
+    return \App\Models\Conversation::where('uuid', $uuid)
+        ->whereHas('users', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
+        })
+        ->exists();
+});
+
 Broadcast::channel('chat.{roomId}', function ($user, $id) {
    return Arr::only($user->toArray(),[
    	'id',
