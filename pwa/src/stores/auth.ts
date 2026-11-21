@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { login as apiLogin, logout as apiLogout } from '@/services/auth'
 import { setToken } from '@/services/token'
 import { onUnauthorized } from '@/services/http'
+import { useMessagingStore } from '@/stores/messaging'
 import type { Role, Session } from '@/services/types'
 
 const STORAGE_KEY = 'gego.session'
@@ -69,6 +70,8 @@ export const useAuthStore = defineStore('auth', {
         designation: session.designation,
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stored))
+      // Realtime + unread badge live for the whole session.
+      void useMessagingStore().start()
     },
     async logout(callApi = true): Promise<void> {
       const role = this.role
@@ -76,6 +79,7 @@ export const useAuthStore = defineStore('auth', {
       if (callApi && role) await apiLogout(role)
     },
     clear(): void {
+      void useMessagingStore().stop()
       setToken(null)
       localStorage.removeItem(STORAGE_KEY)
       this.token = null

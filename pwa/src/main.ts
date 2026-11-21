@@ -7,6 +7,7 @@ import { i18n } from './i18n'
 import { useAuthStore } from './stores/auth'
 import { useSyncStore } from './stores/sync'
 import { useInstallStore } from './stores/install'
+import { useMessagingStore } from './stores/messaging'
 import { flushOutbox } from './offline/outbox'
 import './style.css'
 
@@ -45,5 +46,8 @@ window.addEventListener('appinstalled', () => {
 })
 
 void sync.refreshPending()
+
+// Reloaded with a live session: resume the messaging badge/realtime layer.
+if (auth.isAuthenticated) void useMessagingStore().start()
 
 app.mount('#app')
