@@ -117,7 +117,7 @@ class NewMessageNotification extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return string
      */
-    protected function locale($notifiable)
+    public function locale($notifiable)
     {
         return data_get($notifiable, 'userprofile.locale')
             ?: (data_get($notifiable, 'locale') ?: config('app.locale'));

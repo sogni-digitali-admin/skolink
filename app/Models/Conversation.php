@@ -68,7 +68,7 @@ class Conversation extends Model
     {
         return $this->belongsToMany('App\Models\User')->withPivot('read_at')
             ->withTimestamps()
-        	->oldest();
+        	->oldest('users.created_at');
 
 
     }
