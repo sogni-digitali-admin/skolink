@@ -6,6 +6,19 @@ export default defineConfig({
   resolve: {
     alias: { '@': '/src' },
   },
+  server: {
+    // Dev: same-origin /api proxied to the Laravel backend (avoids CORS).
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8090',
+        changeOrigin: true,
+      },
+      '/broadcasting': {
+        target: 'http://localhost:8090',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     vue(),
     VitePWA({
